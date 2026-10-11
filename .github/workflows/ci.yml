@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: settli
+          POSTGRES_PASSWORD: settli
+          POSTGRES_DB: settli
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: uv pip install -e ".[dev]"
+        env:
+          DATABASE_URL: postgresql://settli:settli@localhost:5432/settli
+          LLM_PROVIDER: mock
+      
+      - name: Run pytest
+        run: pytest tests/ -v --tb=short
+        env:
+          DATABASE_URL: postgresql://settli:settli@localhost:5432/settli
+          LLM_PROVIDER: mock
+          APP_ENV: testing
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: unittests
+        continue-on-error: true
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install uv
+        run: pip install uv
+      
+      - name: Install dependencies
+        run: uv pip install ruff mypy
+      
+      - name: Run ruff
+        run: ruff check app/ --output-format=github
+      
+      - name: Run mypy
+        run: mypy app/ --ignore-missing-imports --no-error-summary
+        continue-on-error: true
