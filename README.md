@@ -368,25 +368,6 @@ docker run -p 8000:8000 --env-file .env settli
 - Audit log captures all actions for compliance
 - PostgreSQL row-level security recommended for multi-tenant deployments
 
-## License
-
-MIT License - see [LICENSE](LICENSE) for details
-
-## Support
-
-- 📧 Email: support@settli.example.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/settli/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/settli/discussions)
-
-## Acknowledgments
-
-Built with:
-- [FastAPI](https://fastapi.tiangolo.com/) — Modern async web framework
-- [asyncpg](https://github.com/MagicStack/asyncpg) — Fast PostgreSQL driver
-- [Twilio](https://www.twilio.com/) — WhatsApp Business API
-- [Pydantic](https://pydantic.dev/) — Data validation
-- [OpenAI](https://openai.com/) / [Groq](https://groq.com/) — LLM providers
-
 ---
 
 Made with ❤️ for splitting bills fairly
